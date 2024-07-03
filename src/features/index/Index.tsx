@@ -1,0 +1,27 @@
+import { FC, lazy, LazyExoticComponent, ReactElement, Suspense, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import { IHeader } from 'src/shared/header/interfaces/header.interface';
+import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
+import { saveToSessionStorage } from 'src/shared/utils/utils.service';
+
+import Hero from './Hero';
+
+const IndexHeader: LazyExoticComponent<FC<IHeader>> = lazy(() => import('../../shared/header/components/Header'));
+
+const Index: FC = (): ReactElement => {
+  useEffect(() => {
+    saveToSessionStorage(JSON.stringify(false), JSON.stringify(''));
+  }, []);
+
+  return (
+    <div className="flex flex-col">
+      <Suspense fallback={<CircularPageLoader />}>
+        <IndexHeader navClass="navbar peer-checked:navbar-active fixed z-20 w-full border-b border-gray-100 bg-white/90 shadow-2xl shadow-gray-600/5 backdrop-blur dark:border-gray-800 dark:bg-gray-900/80 dark:shadow-none" />
+        <Hero />
+        <Outlet /> {/* Aquí se renderizan las rutas anidadas */}
+      </Suspense>
+    </div>
+  );
+};
+
+export default Index;
